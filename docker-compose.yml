@@ -1,0 +1,43 @@
+services:
+  django_backend:
+    build:
+      context: ./backend  
+      dockerfile: Dockerfile
+    container_name: django_backend
+    restart: always
+    env_file:
+      - .env  # Load environment variables from .env file
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres_db:
+        condition: service_healthy  # Wait for DB to be ready
+
+  postgres_db:
+    image: ankane/pgvector:latest  # Prebuilt image with pgvector support
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env  # Load environment variables
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  react_frontend:
+    build: ./frontend
+    container_name: react_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
