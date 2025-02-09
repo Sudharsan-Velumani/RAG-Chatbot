@@ -62,6 +62,12 @@ Create a `.env` file in the root directory and add the following:
 SECRET_KEY=your-django-secret-key
 DATABASE_URL=postgresql://user:password@db:5432/chatbot
 COHERE_API_KEY=your-cohere-api-key
+
+POSTGRES_USER=your-username
+POSTGRES_PASSWORD=your-password
+POSTGRES_DB=your-db
+POSTGRES_HOST=your-host
+POSTGRES_PORT=5432
 ```
 
 ### **3. Start the Application**
